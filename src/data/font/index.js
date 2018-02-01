@@ -1,5 +1,9 @@
 import { templateNames } from 'prototypo-library';
 import { push } from 'react-router-redux';
+import union from 'lodash.union';
+import keys from 'lodash.keys';
+import reduce from 'lodash.reduce';
+import isEqual from 'lodash.isequal';
 import { GraphQLClient } from 'graphql-request';
 import { createPrototypoFactory } from '../createdFonts';
 import { getVariantInfos } from '../queries';
@@ -17,6 +21,7 @@ const initialState = {
   template: {},
   isFetching: false,
   errorMessage: '',
+  createdFont: undefined,
 };
 
 const templates = {
@@ -50,6 +55,7 @@ export default (state = initialState, action) => {
         errorMessage: '',
         values: action.values,
         template: action.template,
+        createdFont: action.createdFont,
       };
 
     case ANIMATE:
@@ -85,15 +91,33 @@ export const importVariant = variantId => (dispatch, getState) => {
     )
     .then((res) => {
         const { fontName } = getState().font;
+        console.log('Creating ' + fontName + ' from ' + templateNames[templates[res.Variant.family.template]]);
         dispatch(createPrototypoFactory()).then((prototypoFontFactory) => {
             prototypoFontFactory
             .createFont(fontName, templateNames[templates[res.Variant.family.template]])
             .then((createdFont) => {
+              console.log(createdFont)
+              // Get differences between base and current values
+              const currentValues = res.Variant.values;
+              const baseValues = createdFont.values;
+              const allkeys = union(keys(createdFont.values), keys(currentValues));
+              const difference = reduce(
+                allkeys,
+                (result, key) => {
+                  if (!isEqual(baseValues[key], currentValues[key])) {
+                    result[key] = currentValues[key];
+                  }
+                  return result;
+                },
+                {},
+              );
               dispatch({
                 type: IMPORTED,
                 template: res.Variant.family.template,
-                values: res.Variant.values,
+                values: difference,
+                createdFont,
               });
+              createdFont.changeParams({});
               dispatch(push('/replay'));
             });
         });    
@@ -105,3 +129,19 @@ export const importVariant = variantId => (dispatch, getState) => {
       });
     }); 
 };
+
+export const animateChanges = (intervalTime, word) => (dispatch, getState) => {
+  const { createdFont, values } = getState().font;
+  console.log(values);
+  createdFont.reset();
+  const paramKeys = Object.keys(values);
+  let paramIndex = 0;
+  var intervalId = setInterval(function(){
+    if (paramIndex < paramKeys.length){
+      createdFont.changeParam(paramKeys[paramIndex], values[paramKeys[paramIndex]], word)
+      paramIndex++;
+    } else {
+      clearInterval(intervalId);
+    }
+  }, intervalTime);
+}
