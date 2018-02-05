@@ -138,7 +138,7 @@ export const animateChanges = (intervalTime, word) => (dispatch, getState) => {
   let paramIndex = 0;
   var intervalId = setInterval(function(){
     if (paramIndex < paramKeys.length){
-      createdFont.changeParam(paramKeys[paramIndex], values[paramKeys[paramIndex]], word)
+      createdFont.tween(paramKeys[paramIndex], values[paramKeys[paramIndex]], 30, 300, () => {}, word)
       paramIndex++;
     } else {
       clearInterval(intervalId);
