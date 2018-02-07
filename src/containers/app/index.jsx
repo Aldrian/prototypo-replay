@@ -31,10 +31,12 @@ class App extends React.Component {
     const { isLoggedIn, hasSelectedFont } = this.props;
     return (
       <main className="App">
+        <div className="container nav">
         {this.props.isLoggedIn
           ? (<Button label="Logout" onClick={()=>{this.props.logout()}} />)
           : false
         }
+        </div>
         <Switch>
           <Route exact path="/" component={Login} />
           <ProtectedRoute
@@ -64,7 +66,7 @@ App.defaultProps = {};
 
 const mapStateToProps = state => ({
   isLoggedIn: state.user.projects.length > 0,
-  hasSelectedFont: state.font.template !== '',
+  hasSelectedFont: Object.keys(state.font.template).length > 0,
 });
 const mapDispatchToProps = dispatch =>
   bindActionCreators({

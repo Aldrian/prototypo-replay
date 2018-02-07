@@ -1,3 +1,18 @@
 .SelectFont {
     
 }
+
+.SelectFont ul {
+    list-style: none;
+}
+
+.SelectFont .family {
+    padding: 10px 15px;
+    background-color: #fafafa;
+    margin: 5px 10px;   
+}
+
+.SelectFont .variant {    
+    cursor: pointer;
+}
+

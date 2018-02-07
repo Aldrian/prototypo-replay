@@ -5,4 +5,25 @@
 .Replay .text {
     font-size: 85px;
     font-family: 'replay';
+    margin-top: 80px;
+}
+
+.Replay .text div {    
+    padding: 150px 30px;
+}
+
+.Replay hr {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.Replay .settings {
+    background-color: #fafafa;
+    padding: 20px 40px;
+    border-radius: 8px;
+}
+
+.Replay .buttons {
+    float: right;
+    margin-top: -50px;
 }

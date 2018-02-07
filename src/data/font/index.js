@@ -130,7 +130,7 @@ export const importVariant = variantId => (dispatch, getState) => {
     }); 
 };
 
-export const animateChanges = (intervalTime, word) => (dispatch, getState) => {
+export const animateChanges = (intervalTime, framesNumber, word) => (dispatch, getState) => {
   const { createdFont, values } = getState().font;
   console.log(values);
   createdFont.reset();
@@ -138,10 +138,10 @@ export const animateChanges = (intervalTime, word) => (dispatch, getState) => {
   let paramIndex = 0;
   var intervalId = setInterval(function(){
     if (paramIndex < paramKeys.length){
-      createdFont.tween(paramKeys[paramIndex], values[paramKeys[paramIndex]], 30, 300, () => {}, word)
+      createdFont.tween(paramKeys[paramIndex], values[paramKeys[paramIndex]], framesNumber, intervalTime, () => {}, word)
       paramIndex++;
     } else {
       clearInterval(intervalId);
     }
-  }, intervalTime);
+  }, intervalTime * 1000);
 }

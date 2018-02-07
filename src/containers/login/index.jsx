@@ -19,8 +19,8 @@ class Login extends React.Component {
   }
   render() {
     return (
-      <div className="Login">
-        Login to Prototypo
+      <div className="Login container">
+        <p>Login to Prototypo</p>
         <form onSubmit={()=>{this.props.connectToPrototypo(this.state.email, this.state.password)}}>
             <input type="email" placeholder="your email" value={this.state.email} onChange={(e) => this.setState({email: e.target.value})}/>
             <input type="password" placeholder="your password" value={this.state.password} onChange={(e) => this.setState({password: e.target.value})}/>

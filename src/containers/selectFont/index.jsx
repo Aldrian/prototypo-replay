@@ -9,21 +9,21 @@ import { importVariant } from '../../data/font';
 import './SelectFont.css';
 
 const SelectFont = props => (
-  <div className="SelectFont">
+  <div className="SelectFont container">
     <div>
           {props.isFetching
           ? (<span> Connecting, please wait....</span>)
           : (<span className="error">{props.errorMessage}</span>)
           }
         </div>
-    <ul>
+    <ul className="family-list row">
     {
       props.projects.map(project => (
-        <li key={`family-${project.id}`}>
+        <li className="family col-lg-3 col-md-4 col-sm-6" key={`family-${project.id}`}>
           {project.name}
           <ul>
             {project.variants.map(variant => (
-              <li key={`variant-${variant.id}`} onClick={() => { props.importVariant(variant.id); }}>{variant.name}</li>
+              <li className="variant" key={`variant-${variant.id}`} onClick={() => { props.importVariant(variant.id); }}>{variant.name}</li>
             ))}
           </ul>
         </li>

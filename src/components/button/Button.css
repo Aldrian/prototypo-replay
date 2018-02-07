@@ -1,9 +1,9 @@
 .Button {
   font-size: 0.8rem;
-  background-color: #501286;
-  border: 2px solid #501286;
+  background-color: #3d3d3d;
+  border: 2px solid #3d3d3d;
   color: #fff;
-  border-radius: 5px;
+  border-radius: 2px;
   padding: 5px 20px;
   cursor: pointer;
   display: inline;
@@ -12,20 +12,20 @@
 
 .Button:hover {
   background-color: #fff;
-  color: #501286;
-  border: 2px solid #501286;
+  color: #3d3d3d;
+  border: 2px solid #3d3d3d;
 }
 
 .Button.hollow {
   background-color: #fff;
-  color: #501286;
-  border: 2px solid #501286;
+  color: #3d3d3d;
+  border: 2px solid #3d3d3d;
 }
 
 .Button.hollow:hover {
-  background-color: #501286;
+  background-color: #3d3d3d;
   color: #fff;
-  border: 2px solid #501286;
+  border: 2px solid #3d3d3d;
 }
 
 .Button.isBack {
