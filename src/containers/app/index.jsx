@@ -10,7 +10,6 @@ import { GRAPHQL_API } from '../../data/constants';
 import './bootstrap-reboot.css';
 import './bootstrap-grid.css';
 import './App.css';
-
 import { logout } from '../../data/user';
 import { createPrototypoFactory } from '../../data/createdFonts';
 

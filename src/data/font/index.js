@@ -14,14 +14,18 @@ export const ANIMATE = 'font/ANIMATE';
 export const IMPORT = 'font/IMPORT';
 export const IMPORTED = 'font/IMPORTED';
 export const ERROR = 'font/ERROR';
+export const ANIMATING = 'font/ANIMATING';
 
 const initialState = {
   fontName: 'replay',
   values: {},
+  baseValues: {},
   template: {},
   isFetching: false,
   errorMessage: '',
   createdFont: undefined,
+  isAnimating: false,
+  loopIntervalId: undefined,
 };
 
 const templates = {
@@ -56,12 +60,20 @@ export default (state = initialState, action) => {
         values: action.values,
         template: action.template,
         createdFont: action.createdFont,
+        baseValues: action.baseValues,
       };
 
     case ANIMATE:
       return {
         ...state,
       };
+
+    case ANIMATING:
+      return {
+        ...state,
+        isAnimating: !state.isAnimating,
+        loopIntervalId: action.loopIntervalId,
+      }
 
     case ERROR:
         return {
@@ -111,11 +123,22 @@ export const importVariant = variantId => (dispatch, getState) => {
                 },
                 {},
               );
+              const differencesBaseValues = reduce(
+                allkeys,
+                (result, key) => {
+                  if (!isEqual(baseValues[key], currentValues[key])) {
+                    result[key] = baseValues[key];
+                  }
+                  return result;
+                },
+                {},
+              );
               dispatch({
                 type: IMPORTED,
                 template: res.Variant.family.template,
                 values: difference,
                 createdFont,
+                baseValues: differencesBaseValues,
               });
               createdFont.changeParams({});
               dispatch(push('/replay'));
@@ -144,4 +167,50 @@ export const animateChanges = (intervalTime, framesNumber, word) => (dispatch, g
       clearInterval(intervalId);
     }
   }, intervalTime * 1000);
+}
+
+export const animateChangesInfinite = (intervalTime, framesNumber, word) => (dispatch, getState) => {
+  const { createdFont, values, baseValues, isAnimating, loopIntervalId } = getState().font;
+
+  if (isAnimating) {
+    clearInterval(loopIntervalId);
+    dispatch({
+      type: ANIMATING,
+      loopIntervalId: undefined,
+    })
+  }
+  else {
+    createdFont.reset();
+    const paramKeys = Object.keys(values);
+    let paramIndex = 0;
+    let baseParamIndex = paramKeys.length - 1;
+    let loopReverse = false;
+    var intervalId = setInterval(function(){
+      if (loopReverse) {
+        if (baseParamIndex === 0) {
+          loopReverse = false;
+          paramIndex = 0;
+        }
+        else {
+          createdFont.tween(paramKeys[baseParamIndex], baseValues[paramKeys[baseParamIndex]], framesNumber, intervalTime, () => {}, word);
+          baseParamIndex --;
+        }
+      }
+      else {
+        if (paramIndex < paramKeys.length){
+          createdFont.tween(paramKeys[paramIndex], values[paramKeys[paramIndex]], framesNumber, intervalTime, () => {}, word)
+          paramIndex++;
+        } else {
+          loopReverse = true;
+          baseParamIndex = paramKeys.length - 1;
+        }
+      }
+    }, intervalTime * 1000);
+    clearInterval(loopIntervalId);
+    dispatch({
+      type: ANIMATING,
+      loopIntervalId: intervalId,
+    })
+  }
+  
 }

@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
-import { animateChanges } from "../../data/font";
+import { animateChanges, animateChangesInfinite } from "../../data/font";
 import { SketchPicker } from "react-color";
 import reactCSS from "reactcss";
 import InputRange from "react-input-range";
@@ -24,6 +24,7 @@ class Replay extends React.Component {
       displayTextColorPicker: false,
       displayBackgroundColorPicker: false,
       hideSettings: false,
+      shouldLoop: false,
       textColor: {
         r: "0",
         g: "0",
@@ -137,7 +138,9 @@ class Replay extends React.Component {
           <Button
             label="Animate changes"
             onClick={() => {
-              this.props.animateChanges(this.state.intervalTime, this.state.framesNumber, this.state.word);
+              this.state.shouldLoop
+              ? this.props.animateChangesInfinite(this.state.intervalTime, this.state.framesNumber, this.state.word)
+              : this.props.animateChanges(this.state.intervalTime, this.state.framesNumber, this.state.word);
             }}
           />
           <Button
@@ -233,6 +236,14 @@ class Replay extends React.Component {
               onChange={e => this.setState({ framesNumber: e.target.value })}
             />
           </p>
+          <p>
+            Loop animation:{" "}
+            <input
+              type="checkbox"
+              value={this.state.shouldLoop}
+              onChange={e => this.setState({ shouldLoop: !this.state.shouldLoop })}
+            />
+          </p>
         </div>
         <div className="text"
           style={{
@@ -268,14 +279,16 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       selectAnotherFont: () => push("/selectFont"),
-      animateChanges
+      animateChanges,
+      animateChangesInfinite,
     },
     dispatch
   );
 
 Replay.propTypes = {
   selectAnotherFont: PropTypes.func.isRequired,
-  animateChanges: PropTypes.func.isRequired
+  animateChanges: PropTypes.func.isRequired,
+  animateChangesInfinite: PropTypes.func.isRequired,
 };
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Replay));
