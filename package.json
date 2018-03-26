@@ -13,7 +13,7 @@
     "lodash.reduce": "^4.6.0",
     "lodash.union": "^4.6.0",
     "prop-types": "^15.5.10",
-    "prototypo-library": "1.2.6",
+    "prototypo-library": "^1.2.13",
     "react": "^15.5.4",
     "react-color": "^2.13.8",
     "react-dnd": "^2.5.4",
